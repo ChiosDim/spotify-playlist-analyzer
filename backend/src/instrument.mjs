@@ -5,6 +5,6 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.NODE_ENV || "development",
   integrations: [nodeProfilingIntegration()],
-  tracesSampleRate: 1.0,
-  profileSessionSampleRate: 1.0, // Enable profiling for a percentage of sessions
+  tracesSampleRate: process.env.NODE_ENV === "production" ? 0.2 : 1.0,
+  enabled: Boolean(process.env.SENTRY_DSN),
 });

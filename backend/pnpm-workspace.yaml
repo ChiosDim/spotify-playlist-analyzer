@@ -1,7 +1,7 @@
 allowBuilds:
-  '@parcel/watcher': set this to true or false
-  '@sentry/node-cpu-profiler': set this to true or false
-  unrs-resolver: set this to true or false
+  '@parcel/watcher': false
+  '@sentry/node-cpu-profiler': false
+  unrs-resolver: false
 minimumReleaseAgeExclude:
   - '@sentry/core@10.75.2'
   - '@sentry/node-core@10.75.2'

@@ -1,12 +1,36 @@
-# Node
+# Dependencies
 node_modules/
-.env
-.DS_Store
+.pnpm-store/
+
+# Builds
 dist/
 build/
-*.log
 coverage/
+*.tsbuildinfo
 
-# OS
-Thumbs.db
+# Environment files
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+logs/
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
 .DS_Store
+Thumbs.db
+
+# Test output
+test-results/
+playwright-report/
+
+# Sentry
+.sentryclirc
