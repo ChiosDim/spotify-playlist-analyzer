@@ -33,7 +33,7 @@ export function calculateSimilarity(t1, t2) {
   const reasons = [];
 
   const compare = (name, v1, v2, weight) => {
-    if (v1 > 0 && v2 > 0) {
+    if (v1 > 0 || v2 > 0) {
       const sim = 1 - Math.abs(v1 - v2);
       scoreSum += sim * weight;
       weightSum += weight;
@@ -90,7 +90,7 @@ export function generateRecommendations(tracks, opts = {}) {
 
     for (let k = 0; k < Math.min(perTrack, neighbours.length); k++) {
       const { track, score, reason } = neighbours[k];
-      const key = track.key();
+      const key = track.trackKey();
       if (seenTrackKeys.has(key)) continue;
       seenTrackKeys.add(key);
       recommendations.push({ track, reason, similarityScore: score });

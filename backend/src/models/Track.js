@@ -53,7 +53,7 @@ export default class Track {
    * Returns a stable key for de-duplication / comparison.
    * Prefers URI, falls back to normalized name+artist.
    */
-  key() {
+  trackKey() {
     if (this.uri) return this.uri;
     return `${this.name.toLowerCase()}|${this.artists.toLowerCase()}`;
   }

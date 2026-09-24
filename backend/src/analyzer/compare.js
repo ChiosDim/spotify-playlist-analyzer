@@ -41,7 +41,7 @@ export function comparePlaylists(playlistTracks, playlistNames = []) {
   playlistTracks.forEach((playlist, playlistIdx) => {
     const seenInThisPlaylist = new Set();
     for (const track of playlist) {
-      const key = track.key();
+      const key = track.trackKey();
       if (seenInThisPlaylist.has(key)) continue;
       seenInThisPlaylist.add(key);
 
@@ -61,7 +61,7 @@ export function comparePlaylists(playlistTracks, playlistNames = []) {
     const seen = new Set();
     const unique = [];
     for (const track of playlist) {
-      const key = track.key();
+      const key = track.trackKey();
       if (seen.has(key)) continue;
       seen.add(key);
       if (playlistsContaining.get(key).size === 1) unique.push(track);

@@ -29,11 +29,11 @@ describe("Track", () => {
     expect(t.tempo).toBe(0);
   });
 
-  it("key() prefers URI over name/artist", () => {
+  it("trackKey() prefers URI over name/artist", () => {
     const a = new Track({ uri: "spotify:track:1", name: "A", artists: "B" });
     const b = new Track({ name: "A", artists: "B" });
-    expect(a.key()).toBe("spotify:track:1");
-    expect(b.key()).toBe("a|b");
+    expect(a.trackKey()).toBe("spotify:track:1");
+    expect(b.trackKey()).toBe("a|b");
   });
 
   it("fromCSVRow maps Exportify columns correctly", () => {
