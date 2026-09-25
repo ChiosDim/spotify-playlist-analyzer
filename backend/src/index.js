@@ -8,7 +8,6 @@ import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
 import * as Sentry from "@sentry/node";
 
-
 const app = express();
 app.use(helmet());
 app.use(compression());
