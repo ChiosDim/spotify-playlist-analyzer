@@ -7,14 +7,14 @@ import Track from "../models/Track.js";
  *
  * @param {Buffer} buffer - Raw CSV bytes
  * @returns {Promise<Track[]>}
- * @throws {Error} if the buffer is empty or CSV parsing fails
+ * @throws {Error} if CSV parsing fails
  */
 export function parseCSV(buffer) {
   return new Promise((resolve, reject) => {
     if (!buffer || buffer.length === 0) {
-      return reject(new Error("Empty CSV buffer"));
+      reject(new Error("Empty CSV buffer"));
+      return;
     }
-
     const tracks = [];
     let rowCount = 0;
 
@@ -29,8 +29,10 @@ export function parseCSV(buffer) {
       })
       .on("end", () => {
         if (rowCount === 0) {
-          return reject(new Error("CSV contained no data rows"));
+          reject(new Error("CSV contains no data rows"));
+          return;
         }
+
         resolve(tracks);
       })
       .on("error", (err) => reject(err));

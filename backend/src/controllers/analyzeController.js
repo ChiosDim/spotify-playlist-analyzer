@@ -9,12 +9,21 @@ export const analyzeController = asyncHandler(async (req, res) => {
     return fail(res, 400, "No CSV file uploaded. Use field name 'playlist'.", "NO_FILE");
   }
 
-  const tracks = await parseCSV(req.file.buffer);
+  let tracks;
+
+  try {
+    tracks = await parseCSV(req.file.buffer);
+  } catch (err) {
+    if (err.message.includes("Empty CSV buffer") || err.message.includes("no data rows")) {
+      return fail(res, 400, "CSV contains no valid tracks", "NO_VALID_TRACKS");
+    }
+
+    throw err;
+  }
 
   if (tracks.length === 0) {
     return fail(res, 400, "CSV contains no valid tracks", "NO_VALID_TRACKS");
   }
-
   const distribution = genreDistribution(tracks);
   const top = topGenres(distribution, 20);
   const audioFeatures = calculateAudioFeatures(tracks);

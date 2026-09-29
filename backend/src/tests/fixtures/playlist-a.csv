@@ -1,0 +1,7 @@
+Track URI,Track Name,Artist Names,Album Name,Release Date,Duration (ms),Popularity,Explicit,Genres,Record Label,Danceability,Energy,Key,Loudness,Mode,Speechiness,Acousticness,Instrumentalness,Liveness,Valence,Tempo,Time Signature
+spotify:track:1,Sunrise,Artist A,Morning Vibes,2020-01-01,180000,50,false,Pop,Label Records,0.70,0.80,5,-5.0,1,0.10,0.20,0.10,0.20,0.60,120,4
+spotify:track:2,Thunder,Artist B,Storm,2020-01-01,200000,60,false,Rock,Label Records,0.50,0.70,6,-6.0,0,0.20,0.30,0.20,0.30,0.40,130,4
+spotify:track:3,Neon Lights,Artist C,Night Drive,2020-01-01,220000,70,true,"Pop, Rock",Label Records,0.60,0.75,7,-7.0,1,0.15,0.25,0.15,0.25,0.50,125,4
+spotify:track:4,Blue Note,Artist D,Jazz Club,2020-01-01,240000,55,false,Jazz,Label Records,0.40,0.50,8,-8.0,0,0.30,0.40,0.30,0.40,0.30,110,3
+spotify:track:5,Firefly,Artist E,Summer Nights,2020-01-01,260000,65,false,"Pop, Jazz",Label Records,0.80,0.90,9,-4.0,1,0.05,0.10,0.05,0.10,0.70,140,4
+spotify:track:6,Firefly,Artist E,Summer Nights,2020-01-01,260000,65,false,"Pop, Jazz",Label Records,0.80,0.90,9,-4.0,1,0.05,0.10,0.05,0.10,0.70,140,4
