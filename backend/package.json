@@ -23,7 +23,7 @@
     "@sentry/profiling-node": "^10.75.2",
     "axios": "^1.20.0",
     "compression": "^1.8.2",
-    "connect-redis": "^10.0.0",
+    "connect-redis": "^7.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "csv-parser": "^3.2.1",

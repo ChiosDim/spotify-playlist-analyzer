@@ -8,7 +8,6 @@ import { upsertUserFromSpotify } from "../services/spotifyService.js";
  * Called once at app startup.
  */
 export function configurePassport() {
-  
   passport.use(
     new SpotifyStrategy(
       {

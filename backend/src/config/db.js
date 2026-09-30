@@ -14,6 +14,7 @@ export async function connectDB(uri = process.env.MONGODB_URI) {
   // Deprecated flags ({ useNewUrlParser, useUnifiedTopology }) are omitted —
   // modern Mongoose (7+) enables them by default.
   const options = {
+    dbName: "spotify-analyzer",
     autoIndex: process.env.NODE_ENV !== "production",
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,

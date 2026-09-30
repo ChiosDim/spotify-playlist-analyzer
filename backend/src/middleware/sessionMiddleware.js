@@ -1,5 +1,5 @@
 import session from "express-session";
-import { RedisStore } from "connect-redis";
+import RedisStore from "connect-redis";
 import { getRedis } from "../config/redis.js";
 
 export function buildSessionMiddleware() {
@@ -11,7 +11,7 @@ export function buildSessionMiddleware() {
     });
   }
   const redis = getRedis();
-  
+
   const store = new RedisStore({
     client: redis,
     prefix: "sess:",
