@@ -46,9 +46,6 @@ const C = makeTrack({
   speechiness: 0.5,
 });
 
-console.log("A-B", calculateSimilarity(A, B));
-console.log("A-C", calculateSimilarity(A, C));
-console.log("B-C", calculateSimilarity(B, C));
 
 describe("calculateSimilarity", () => {
   it("returns a high score for similar tracks", () => {

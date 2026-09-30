@@ -3,8 +3,15 @@ import { RedisStore } from "connect-redis";
 import { getRedis } from "../config/redis.js";
 
 export function buildSessionMiddleware() {
+  if (process.env.NODE_ENV === "test") {
+    return session({
+      secret: "test-secret",
+      resave: false,
+      saveUninitialized: false,
+    });
+  }
   const redis = getRedis();
-
+  
   const store = new RedisStore({
     client: redis,
     prefix: "sess:",

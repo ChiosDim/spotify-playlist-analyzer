@@ -34,5 +34,6 @@ export function errorHandler(err, req, res, _next) {
 
   // Anything else is a 500. Sentry already captured it upstream.
   req.log?.error({ err }, "Unhandled error");
+  console.error(err);
   return fail(res, 500, "Internal server error", "INTERNAL_ERROR");
 }

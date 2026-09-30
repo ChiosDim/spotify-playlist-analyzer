@@ -1,3 +1,4 @@
+import "dotenv/config";
 import passport from "passport";
 import { Strategy as SpotifyStrategy } from "passport-spotify";
 import User from "../models/User.js";
@@ -7,6 +8,7 @@ import { upsertUserFromSpotify } from "../services/spotifyService.js";
  * Called once at app startup.
  */
 export function configurePassport() {
+  
   passport.use(
     new SpotifyStrategy(
       {

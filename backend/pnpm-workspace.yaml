@@ -1,6 +1,7 @@
 allowBuilds:
   "@parcel/watcher": false
   "@sentry/node-cpu-profiler": false
+  mongodb-memory-server: set this to true or false
   unrs-resolver: false
 minimumReleaseAgeExclude:
   - "@sentry/core@10.75.2"
