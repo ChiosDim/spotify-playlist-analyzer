@@ -1,36 +1,65 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import * as Sentry from "@sentry/react";
-
-function Home() {
-  return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-4">Spotify Playlist Analyzer</h1>
-      <p className="mb-4">Frontend is running.</p>
-      <Link to="/about" className="btn btn-primary">
-        Go to About
-      </Link>
-    </div>
-  );
-}
-
-function About() {
-  return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-4">About</h1>
-      <Link to="/" className="btn btn-ghost">
-        Back home
-      </Link>
-    </div>
-  );
-}
+import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Analyze from "./pages/Analyze";
+import Duplicates from "./pages/Duplicates";
+import Compare from "./pages/Compare";
+import Recommendations from "./pages/Recommendations";
 
 export default function App() {
   return (
-    <Sentry.ErrorBoundary fallback={<p className="p-8">Something went wrong.</p>}>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
+    <Sentry.ErrorBoundary fallback={<p className="p-8">Something went wrong. Try refreshing.</p>}>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/analyze"
+            element={
+              <ProtectedRoute>
+                <Analyze />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/duplicates"
+            element={
+              <ProtectedRoute>
+                <Duplicates />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/compare"
+            element={
+              <ProtectedRoute>
+                <Compare />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/recommend"
+            element={
+              <ProtectedRoute>
+                <Recommendations />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<p className="p-8 text-center">Page not found</p>} />
+        </Routes>
+      </Layout>
     </Sentry.ErrorBoundary>
   );
 }

@@ -1,6 +1,6 @@
 import {createContext, useCallback, useEffect, useReducer} from 'react';
 import { authApi } from '../api/client';
-import { authReducer, initialState } from '../reducers/authReducer';
+import { authReducer, initialState } from './authReducer';
 
 export const AuthContext = createContext();
 
