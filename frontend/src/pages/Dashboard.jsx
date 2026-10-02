@@ -24,25 +24,37 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-        <Link to="/analyze" className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors">
+        <Link
+          to="/analyze"
+          className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors"
+        >
           <div className="card-body">
             <h3 className="card-title text-base">Analyze</h3>
             <p className="text-xs text-base-content/60">Upload a CSV or pick a Spotify playlist</p>
           </div>
         </Link>
-        <Link to="/duplicates" className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors">
+        <Link
+          to="/duplicates"
+          className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors"
+        >
           <div className="card-body">
             <h3 className="card-title text-base">Find Duplicates</h3>
             <p className="text-xs text-base-content/60">Clean up your library</p>
           </div>
         </Link>
-        <Link to="/compare" className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors">
+        <Link
+          to="/compare"
+          className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors"
+        >
           <div className="card-body">
             <h3 className="card-title text-base">Compare</h3>
             <p className="text-xs text-base-content/60">Common and unique tracks</p>
           </div>
         </Link>
-        <Link to="/recommend" className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors">
+        <Link
+          to="/recommend"
+          className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors"
+        >
           <div className="card-body">
             <h3 className="card-title text-base">Recommendations</h3>
             <p className="text-xs text-base-content/60">Discover similar tracks</p>
@@ -64,7 +76,11 @@ export default function Dashboard() {
               >
                 <div className="card-body p-3">
                   {p.image && (
-                    <img src={p.image} alt="" className="w-full aspect-square object-cover rounded-md mb-2" />
+                    <img
+                      src={p.image}
+                      alt=""
+                      className="w-full aspect-square object-cover rounded-md mb-2"
+                    />
                   )}
                   <p className="font-medium text-sm truncate">{p.name}</p>
                   <p className="text-xs text-base-content/60">{p.trackCount} tracks</p>

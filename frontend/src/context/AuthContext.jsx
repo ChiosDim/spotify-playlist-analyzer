@@ -1,6 +1,6 @@
-import {createContext, useCallback, useEffect, useReducer} from 'react';
-import { authApi } from '../api/client';
-import { authReducer, initialState } from './authReducer';
+import { createContext, useCallback, useEffect, useReducer } from "react";
+import { authApi } from "../api/client";
+import { authReducer, initialState } from "./authReducer";
 
 export const AuthContext = createContext();
 
@@ -56,4 +56,4 @@ export const AuthProvider = ({ children }) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+};

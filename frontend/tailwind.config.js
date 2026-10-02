@@ -15,7 +15,7 @@ export default {
     themes: [
       {
         spotify: {
-          primary: "#1DB954",           // Spotify green
+          primary: "#1DB954", // Spotify green
           "primary-content": "#ffffff",
           secondary: "#191414",
           "secondary-content": "#ffffff",

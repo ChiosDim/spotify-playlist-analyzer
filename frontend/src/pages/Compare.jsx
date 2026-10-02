@@ -18,8 +18,8 @@ export default function Compare() {
       <div>
         <h1 className="text-3xl font-bold">Compare playlists</h1>
         <p className="text-base-content/60">
-          Upload 2 to 5 CSVs. We&#39;ll show you which tracks are shared and which are unique to each
-          playlist.
+          Upload 2 to 5 CSVs. We&#39;ll show you which tracks are shared and which are unique to
+          each playlist.
         </p>
       </div>
 
