@@ -59,25 +59,40 @@ export async function fetchPlaylistTracks(user, playlistId) {
   const accessToken = await ensureFreshAccessToken(user);
   const headers = { Authorization: `Bearer ${accessToken}` };
 
-  const limit = 300;
+  const limit = 100;
   let offset = 0;
   let total;
   const tracks = [];
 
   do {
-    const { data } = await axios.get(
-      `${SPOTIFY_API}/playlists/${encodeURIComponent(playlistId)}/tracks`,
-      {
-        headers,
-        params: { offset, limit, additional_types: "track" },
+    let response;
+    try {
+      response = await axios.get(
+        `${SPOTIFY_API}/playlists/${encodeURIComponent(playlistId)}/items`,
+        {
+          headers,
+          params: { offset, limit, additional_types: "track" },
+        }
+      );
+    } catch (err) {
+      if (err.response?.status === 403) {
+        throw new HttpError(
+          403,
+          "Spotify refused access to this playlist. It may be Spotify-generated (like Discover Weekly), private, or not owned by you.",
+          "SPOTIFY_PLAYLIST_FORBIDDEN"
+        );
       }
-    );
+      if (err.response?.status === 404) {
+        throw new HttpError(404, "Playlist not found", "PLAYLIST_NOT_FOUND");
+      }
+      throw err;
+    }
 
+    const data = response.data;
     total = data.total;
 
     for (const item of data.items) {
-      // item.track can be null for local files or unavailable tracks
-      const t = item?.track;
+      const t = item?.item ?? item?.track;
       if (!t || !t.uri) continue;
 
       const track = new Track({
@@ -99,7 +114,6 @@ export async function fetchPlaylistTracks(user, playlistId) {
 
   return tracks;
 }
-
 /**
  * Fetch the current user's playlists (first page of 50, most recent).
  */
@@ -110,15 +124,16 @@ export async function fetchUserPlaylists(user, { limit = 50 } = {}) {
     params: { limit },
   });
 
-  return data.items.map((p) => ({
-    id: p.id,
-    name: p.name,
-    trackCount: p.tracks?.total ?? 0,
-    image: p.images?.[0]?.url ?? "",
-    owner: p.owner?.display_name ?? "",
-  }));
+  return data.items
+    .filter((p) => p.owner?.id !== "spotify")
+    .map((p) => ({
+      id: p.id,
+      name: p.name,
+      trackCount: p.items?.total ?? 0,
+      image: p.images?.[0]?.url ?? "",
+      owner: p.owner?.display_name ?? "",
+    }));
 }
-
 /**
  * Persist the user (or return the existing one) after OAuth login.
  * Called from the Passport verify callback.

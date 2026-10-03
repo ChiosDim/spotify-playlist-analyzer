@@ -20,6 +20,7 @@ export async function connectDB(uri = process.env.MONGODB_URI) {
     socketTimeoutMS: 45000,
     maxPoolSize: 10,
     minPoolSize: 1,
+    autoSelectFamily: false,
   };
 
   try {
