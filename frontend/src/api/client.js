@@ -85,4 +85,11 @@ export const spotifyApi = {
   playlists: () => apiGet("/spotify/playlists"),
   analyze: (playlistId, include = "features") =>
     apiPost("/spotify/analyze", { playlistId, include }),
+  similarFromLibrary: (playlistId, { minScore = 0.7, perSource = 3, limit = 40 } = {}) =>
+    apiPost("/spotify/similar-from-library", {
+      playlistId,
+      minScore,
+      perSource,
+      limit,
+    }),
 };

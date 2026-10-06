@@ -2,6 +2,7 @@ import { Router } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ok, fail } from "../utils/ApiResponse.js";
 import { requireAuth } from "../middleware/requireAuth.js";
+import { librarySimilarController } from "../controllers/librarySimilarController.js";
 import { fetchPlaylistTracks, fetchUserPlaylists } from "../services/spotifyService.js";
 import { enrichTracksWithAudioFeatures } from "../services/reccoBeatsService.js";
 import { genreDistribution, topGenres } from "../analyzer/genre.js";
@@ -83,4 +84,13 @@ router.post(
   })
 );
 
+/**
+ * POST /api/spotify/similar-from-library
+ * Body: { playlistId, minScore?, perSource?, limit? }
+ * Finds tracks in the user's other playlists that are similar to the given playlist.
+ */
+router.post(
+  "/similar-from-library",
+  asyncHandler(librarySimilarController)
+);
 export default router;

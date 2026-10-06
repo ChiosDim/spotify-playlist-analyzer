@@ -12,10 +12,10 @@ const WEIGHTS = {
   energy: 0.15,
   valence: 0.15,
   tempo: 0.15,
-  acousticness: 0.10,
-  instrumentalness: 0.10,
-  liveness: 0.10,
-  speechiness: 0.10,
+  acousticness: 0.1,
+  instrumentalness: 0.1,
+  liveness: 0.1,
+  speechiness: 0.1,
 };
 
 const TEMPO_RANGE = 140;
@@ -52,19 +52,23 @@ export function calculateSimilarity(t1, t2) {
   }
 
   const score = weightSum === 0 ? 0 : scoreSum / weightSum;
-  const reason = reasons.length > 0
-    ? `similar ${reasons.map((r) => r.replace("similar ", "")).join(", ")}`
-    : "based on audio similarity";
+  const reason =
+    reasons.length > 0
+      ? `similar ${reasons.map((r) => r.replace("similar ", "")).join(", ")}`
+      : "based on audio similarity";
   return { score, reason };
 }
 
 /**
  * Build a stable key for a track, matching the logic used elsewhere.
  */
-function trackKey(track) {
+export function trackKey(track) {
   if (track.uri) return track.uri;
   return `${track.name.toLowerCase()}|${track.artists.toLowerCase()}`;
 }
+
+// Backwards-compat alias so callers can use either name
+export const getTrackKey = trackKey;
 
 /**
  * Find pairs of similar tracks within a playlist.
@@ -108,4 +112,61 @@ export function findSimilarTracks(tracks, opts = {}) {
   }
 
   return pairs;
+}
+
+/**
+ * Find tracks from a pool that are similar to tracks in a source playlist.
+ * Different from findSimilarTracks: source and pool are two different lists.
+ * Filters out anything already in the source playlist and deduplicates results.
+ *
+ * @param {import("../models/Track.js").default[]} sourceTracks
+ * @param {import("../models/Track.js").default[]} poolTracks
+ * @param {{ minScore?: number, perSource?: number }} [opts]
+ * @returns {Array<{
+ *   track: import("../models/Track.js").default,
+ *   seedName: string,
+ *   seedArtists: string,
+ *   similarityScore: number,
+ *   reason: string,
+ * }>}
+ */
+export function findSimilarInPool(sourceTracks, poolTracks, opts = {}) {
+  const { minScore = 0.7, perSource = 3 } = opts;
+  if (sourceTracks.length === 0 || poolTracks.length === 0) return [];
+
+  // Exclude anything already in the source playlist
+  const sourceKeys = new Set(sourceTracks.map(trackKey));
+  const filteredPool = poolTracks.filter((t) => !sourceKeys.has(trackKey(t)));
+
+  if (filteredPool.length === 0) return [];
+
+  const matches = [];
+  const seenMatches = new Set(); // dedupe by pool track
+
+  for (const source of sourceTracks) {
+    const scored = [];
+    for (const candidate of filteredPool) {
+      const { score, reason } = calculateSimilarity(source, candidate);
+      if (score >= minScore) {
+        scored.push({ track: candidate, score, reason });
+      }
+    }
+    scored.sort((a, b) => b.score - a.score);
+
+    for (let i = 0; i < Math.min(perSource, scored.length); i++) {
+      const { track, score, reason } = scored[i];
+      const key = trackKey(track);
+      if (seenMatches.has(key)) continue;
+      seenMatches.add(key);
+      matches.push({
+        track,
+        seedName: source.name,
+        seedArtists: source.artists,
+        similarityScore: score,
+        reason,
+      });
+    }
+  }
+
+  return matches.sort((a, b) => b.similarityScore - a.similarityScore);
 }

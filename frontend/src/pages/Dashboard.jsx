@@ -23,7 +23,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
         <Link
           to="/analyze"
           className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors"
@@ -60,6 +60,15 @@ export default function Dashboard() {
             <p className="text-xs text-base-content/60">Discover similar tracks</p>
           </div>
         </Link>
+        <Link
+          to="/from-my-library"
+          className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors"
+        >
+          <div className="card-body">
+            <h3 className="card-title text-base">From My Library</h3>
+            <p className="text-xs text-base-content/60">Rediscover your own tracks</p>
+          </div>
+        </Link>
       </div>
 
       <section>
@@ -67,7 +76,7 @@ export default function Dashboard() {
         {isLoading && <LoadingSpinner />}
         {error && <ErrorAlert error={error} />}
         {data?.playlists && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {data.playlists.map((p) => (
               <Link
                 key={p.id}
