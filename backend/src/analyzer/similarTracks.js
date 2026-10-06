@@ -1,9 +1,10 @@
 /**
  * @typedef {{
- *   track: import("../models/Track.js").default,
+ *   source: import("../models/Track.js").default,
+ *   match: import("../models/Track.js").default,
  *   reason: string,
  *   similarityScore: number,
- * }} Recommendation
+ * }} SimilarPair
  */
 
 const WEIGHTS = {
@@ -11,29 +12,21 @@ const WEIGHTS = {
   energy: 0.15,
   valence: 0.15,
   tempo: 0.15,
-  acousticness: 0.1,
-  instrumentalness: 0.1,
-  liveness: 0.1,
-  speechiness: 0.1,
+  acousticness: 0.10,
+  instrumentalness: 0.10,
+  liveness: 0.10,
+  speechiness: 0.10,
 };
 
-const TEMPO_RANGE = 140; // max meaningful BPM difference
+const TEMPO_RANGE = 140;
 
-/**
- * Compute similarity between two tracks (0.0–1.0) based on audio features.
- * Only features present (>0) in both tracks are considered.
- *
- * @param {import("../models/Track.js").default} t1
- * @param {import("../models/Track.js").default} t2
- * @returns {{ score: number, reason: string }}
- */
 export function calculateSimilarity(t1, t2) {
   let weightSum = 0;
   let scoreSum = 0;
   const reasons = [];
 
   const compare = (name, v1, v2, weight) => {
-    if (v1 > 0 || v2 > 0) {
+    if (v1 > 0 && v2 > 0) {
       const sim = 1 - Math.abs(v1 - v2);
       scoreSum += sim * weight;
       weightSum += weight;
@@ -59,43 +52,60 @@ export function calculateSimilarity(t1, t2) {
   }
 
   const score = weightSum === 0 ? 0 : scoreSum / weightSum;
-  const reason = reasons.length > 0 ? `due to ${reasons.join(", ")}` : "based on audio similarity";
+  const reason = reasons.length > 0
+    ? `similar ${reasons.map((r) => r.replace("similar ", "")).join(", ")}`
+    : "based on audio similarity";
   return { score, reason };
 }
 
 /**
- * Generate top recommendations for a playlist.
- * For each track, find its 2 most similar neighbours, avoiding duplicates.
- *
+ * Build a stable key for a track, matching the logic used elsewhere.
+ */
+function trackKey(track) {
+  if (track.uri) return track.uri;
+  return `${track.name.toLowerCase()}|${track.artists.toLowerCase()}`;
+}
+
+/**
+ * Find pairs of similar tracks within a playlist.
+ * Returns pairs where each entry has BOTH source and match.
  * @param {import("../models/Track.js").default[]} tracks
  * @param {{ minScore?: number, perTrack?: number }} [opts]
- * @returns {Recommendation[]}
+ * @returns {SimilarPair[]}
  */
-export function generateRecommendations(tracks, opts = {}) {
+export function findSimilarTracks(tracks, opts = {}) {
   const { minScore = 0.5, perTrack = 2 } = opts;
   if (tracks.length < 2) return [];
 
-  const recommendations = [];
-  const seenTrackKeys = new Set();
+  const pairs = [];
+  const seenPairs = new Set();
 
   for (let i = 0; i < tracks.length; i++) {
     const neighbours = [];
     for (let j = 0; j < tracks.length; j++) {
       if (i === j) continue;
       const { score, reason } = calculateSimilarity(tracks[i], tracks[j]);
-      if (score >= minScore) neighbours.push({ track: tracks[j], score, reason });
+      if (score >= minScore) {
+        neighbours.push({ track: tracks[j], score, reason });
+      }
     }
-
     neighbours.sort((a, b) => b.score - a.score);
 
     for (let k = 0; k < Math.min(perTrack, neighbours.length); k++) {
-      const { track, score, reason } = neighbours[k];
-      const key = track.trackKey();
-      if (seenTrackKeys.has(key)) continue;
-      seenTrackKeys.add(key);
-      recommendations.push({ track, reason, similarityScore: score });
+      const { track: match, score, reason } = neighbours[k];
+      // Canonical pair key — A↔B and B↔A are the same pair
+      const pairKey = [trackKey(tracks[i]), trackKey(match)].sort().join("||");
+      if (seenPairs.has(pairKey)) continue;
+      seenPairs.add(pairKey);
+
+      pairs.push({
+        source: tracks[i],
+        match,
+        reason,
+        similarityScore: score,
+      });
     }
   }
 
-  return recommendations;
+  return pairs;
 }

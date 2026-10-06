@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useRecommendations } from "../hooks/useRecommendations";
+import { useSimilarTracks } from "../hooks/useSimilarTracks";
 import FileUpload from "../components/FileUpload";
-import RecommendationCard from "../components/RecommendationCard";
+import SimilarTrackCard from "../components/SimilarTrackCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorAlert from "../components/ErrorAlert";
 
-export default function Recommendations() {
-  const mutation = useRecommendations();
+export default function SimilarTracks() {
+  const mutation = useSimilarTracks();
   const [minScore, setMinScore] = useState(0.5);
 
   const handleUpload = (file) => mutation.mutate({ file, minScore, perTrack: 2 });
@@ -14,9 +14,9 @@ export default function Recommendations() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Recommendations</h1>
+        <h1 className="text-3xl font-bold">Similar Tracks</h1>
         <p className="text-base-content/60">
-          Find tracks in your playlist that sound similar to each other, based on audio features.
+          Discover which tracks in this playlist sound most alike, based on their audio features.
         </p>
       </div>
 
@@ -42,21 +42,21 @@ export default function Recommendations() {
       <FileUpload
         onUpload={handleUpload}
         disabled={mutation.isPending}
-        buttonLabel="Get recommendations"
+        buttonLabel="Find Similar Tracks"
       />
 
-      {mutation.isPending && <LoadingSpinner label="Generating recommendations…" />}
+      {mutation.isPending && <LoadingSpinner label="Comparing tracks…" />}
       {mutation.error && <ErrorAlert error={mutation.error} />}
 
       {mutation.data && (
         <div className="space-y-4">
           <p className="text-sm text-base-content/60">
-            {mutation.data.recommendationCount} recommendations from {mutation.data.trackCount}{" "}
-            tracks
+            {mutation.data.similarTrackCount} similar track pairs found in{" "}
+            {mutation.data.trackCount} tracks
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {mutation.data.recommendations.map((r, i) => (
-              <RecommendationCard key={i} rec={r} />
+            {mutation.data.similarTracks.map((pair, i) => (
+              <SimilarTrackCard key={i} pair={pair} />
             ))}
           </div>
         </div>

@@ -7,7 +7,7 @@ import { enrichTracksWithAudioFeatures } from "../services/reccoBeatsService.js"
 import { genreDistribution, topGenres } from "../analyzer/genre.js";
 import { calculateAudioFeatures } from "../analyzer/stats.js";
 import { findDuplicates } from "../analyzer/duplicates.js";
-import { generateRecommendations } from "../analyzer/recommend.js";
+import { findSimilarTracks } from "../analyzer/similarTracks.js";
 
 const router = Router();
 
@@ -72,8 +72,8 @@ router.post(
       payload.duplicateGroups = findDuplicates(tracks);
     }
 
-    if (include === "recommendations" || include === "all") {
-      payload.recommendations = generateRecommendations(tracks, {
+    if (include === "similar" || include === "all") {
+      payload.similarTracks = findSimilarTracks(tracks, {
         minScore: 0.5,
         perTrack: 2,
       });

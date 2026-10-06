@@ -52,11 +52,11 @@ export default function Dashboard() {
           </div>
         </Link>
         <Link
-          to="/recommend"
+          to="/similar-tracks"
           className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors"
         >
           <div className="card-body">
-            <h3 className="card-title text-base">Recommendations</h3>
+            <h3 className="card-title text-base">Similar Tracks</h3>
             <p className="text-xs text-base-content/60">Discover similar tracks</p>
           </div>
         </Link>

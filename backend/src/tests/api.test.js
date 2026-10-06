@@ -129,13 +129,13 @@ describe("POST /api/compare", () => {
 });
 
 /* ------------------------------------------------------------------ */
-/* /api/recommend                                                     */
+/* /api/similar-tracks                                                */
 /* ------------------------------------------------------------------ */
 
-describe("POST /api/recommend", () => {
-  it("returns recommendations for a playlist", async () => {
+describe("POST /api/similar-tracks", () => {
+  it("returns similar track pairs for a playlist", async () => {
     const res = await request(app)
-      .post("/api/recommend?minScore=0.3&perTrack=2")
+      .post("/api/similar-tracks?minScore=0.3&perTrack=2")
       .attach("playlist", FILE_A);
 
     expect(res.status).toBe(200);
@@ -143,26 +143,40 @@ describe("POST /api/recommend", () => {
     expect(data.trackCount).toBe(6);
     expect(data.minScore).toBe(0.3);
     expect(data.perTrack).toBe(2);
-    expect(Array.isArray(data.recommendations)).toBe(true);
-    if (data.recommendations.length > 0) {
-      const r = data.recommendations[0];
-      expect(r).toHaveProperty("track");
-      expect(r).toHaveProperty("reason");
-      expect(r.similarityScore).toBeGreaterThanOrEqual(0.3);
+    expect(Array.isArray(data.similarTracks)).toBe(true);
+    expect(typeof data.similarTrackCount).toBe("number");
+
+    if (data.similarTracks.length > 0) {
+      const pair = data.similarTracks[0];
+      // Every pair must have BOTH a source and a match
+      expect(pair).toHaveProperty("source");
+      expect(pair).toHaveProperty("match");
+      expect(pair).toHaveProperty("reason");
+      expect(pair.source).toHaveProperty("name");
+      expect(pair.match).toHaveProperty("name");
+      expect(pair.similarityScore).toBeGreaterThanOrEqual(0.3);
     }
   });
 
   it("uses default query params when omitted", async () => {
-    const res = await request(app).post("/api/recommend").attach("playlist", FILE_A);
+    const res = await request(app).post("/api/similar-tracks").attach("playlist", FILE_A);
     expect(res.status).toBe(200);
     expect(res.body.data.minScore).toBe(0.5);
     expect(res.body.data.perTrack).toBe(2);
   });
 
   it("rejects invalid minScore (out of range)", async () => {
-    const res = await request(app).post("/api/recommend?minScore=2").attach("playlist", FILE_A);
+    const res = await request(app)
+      .post("/api/similar-tracks?minScore=2")
+      .attach("playlist", FILE_A);
     expect(res.status).toBe(400);
     expect(res.body.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("returns 400 when no file is uploaded", async () => {
+    const res = await request(app).post("/api/similar-tracks");
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe("NO_FILE");
   });
 });
 

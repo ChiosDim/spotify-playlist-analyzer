@@ -74,7 +74,7 @@ export default class Track {
       uri: row["Track URI"],
       name: row["Track Name"],
       album: row["Album Name"],
-      artists: row["Artist Names"],
+      artists: row["Artist Names"] ?? row["Artist Name(s)"] ?? row["Artist Name"] ?? "",
       releaseDate: row["Release Date"],
       genres: row["Genres"],
       recordLabel: row["Record Label"],

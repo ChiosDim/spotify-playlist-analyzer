@@ -12,8 +12,8 @@ export default function Home() {
         <span className="text-primary">Analyze</span> your Spotify playlists
       </h1>
       <p className="text-lg text-base-content/70 mb-10 max-w-2xl mx-auto">
-        Get deep insights into your music taste. Compare playlists, find duplicates, discover
-        recommendations based on audio features, and visualize it all.
+        Get deep insights into your music taste. Compare playlists, find duplicates, and spot the
+        tracks that sound most alike — all based on audio features.
       </p>
 
       <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16">
@@ -36,8 +36,8 @@ export default function Home() {
             desc: "Clean up your library by finding duplicates — even when track names differ slightly.",
           },
           {
-            title: "Smart Recommendations",
-            desc: "Discover tracks you'll love, ranked by audio similarity to your existing playlist.",
+            title: "Similar Tracks",
+            desc: "Discover which tracks in your playlist sound most alike, ranked by audio similarity.",
           },
         ].map((f) => (
           <div key={f.title} className="card bg-base-100 shadow-sm">

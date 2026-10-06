@@ -4,4 +4,4 @@ export { genreDistribution, topGenres } from "./genre.js";
 export { calculateAudioFeatures, computeStats } from "./stats.js";
 export { findDuplicates, normalizeKey } from "./duplicates.js";
 export { comparePlaylists } from "./compare.js";
-export { generateRecommendations, calculateSimilarity } from "./recommend.js";
+export { findSimilarTracks, calculateSimilarity } from "./similarTracks.js";

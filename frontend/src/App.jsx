@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Analyze from "./pages/Analyze";
 import Duplicates from "./pages/Duplicates";
 import Compare from "./pages/Compare";
-import Recommendations from "./pages/Recommendations";
+import SimilarTracks from "./pages/SimilarTracks";
 
 export default function App() {
   return (
@@ -50,10 +50,10 @@ export default function App() {
             }
           />
           <Route
-            path="/recommend"
+            path="/similar-tracks"
             element={
               <ProtectedRoute>
-                <Recommendations />
+                <SimilarTracks />
               </ProtectedRoute>
             }
           />

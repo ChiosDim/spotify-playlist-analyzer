@@ -29,8 +29,8 @@ export default function Navbar() {
             <NavLink to="/compare" className={linkClass}>
               Compare
             </NavLink>
-            <NavLink to="/recommend" className={linkClass}>
-              Recommendations
+            <NavLink to="/similar-tracks" className={linkClass}>
+              Similar Tracks
             </NavLink>
           </>
         )}

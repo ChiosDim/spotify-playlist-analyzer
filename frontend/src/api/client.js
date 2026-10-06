@@ -57,7 +57,6 @@ export const authApi = {
   spotifyLoginUrl: () => `${API_URL}/auth/spotify`,
 };
 
-/* Playlist (CSV) analysis */
 export const analyzeApi = {
   upload: (file) => {
     const form = new FormData();
@@ -74,10 +73,10 @@ export const analyzeApi = {
     files.forEach((f) => form.append("playlists", f));
     return apiPost("/compare", form);
   },
-  recommend: (file, { minScore = 0.5, perTrack = 2 } = {}) => {
+  similarTracks: (file, { minScore = 0.5, perTrack = 2 } = {}) => {
     const form = new FormData();
     form.append("playlist", file);
-    return apiPost(`/recommend?minScore=${minScore}&perTrack=${perTrack}`, form);
+    return apiPost(`/similar-tracks?minScore=${minScore}&perTrack=${perTrack}`, form);
   },
 };
 
