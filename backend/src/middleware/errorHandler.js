@@ -1,7 +1,7 @@
 import { MulterError } from "multer";
 import { ZodError } from "zod";
 import { HttpError } from "../utils/HttpError.js";
-import { fail } from "../utils/ApiResponse.js";
+import { fail } from "../utils/apiResponse.js";
 
 /**
  * Central error handler. Must be registered AFTER all routes and AFTER

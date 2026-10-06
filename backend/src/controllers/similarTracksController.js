@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ok, fail } from "../utils/ApiResponse.js";
+import { ok, fail } from "../utils/apiResponse.js";
 import { parseCSV } from "../services/parserService.js";
 import { findSimilarTracks } from "../analyzer/similarTracks.js";
 

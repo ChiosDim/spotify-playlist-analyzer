@@ -1,5 +1,5 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ok, fail } from "../utils/ApiResponse.js";
+import { ok, fail } from "../utils/apiResponse.js";
 import { parseCSV } from "../services/parserService.js";
 import { comparePlaylists } from "../analyzer/compare.js";
 

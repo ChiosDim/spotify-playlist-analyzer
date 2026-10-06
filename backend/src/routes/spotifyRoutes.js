@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ok, fail } from "../utils/ApiResponse.js";
+import { ok, fail } from "../utils/apiResponse.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { librarySimilarController } from "../controllers/librarySimilarController.js";
 import { fetchPlaylistTracks, fetchUserPlaylists } from "../services/spotifyService.js";
