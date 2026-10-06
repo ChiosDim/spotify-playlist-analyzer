@@ -1,3 +1,5 @@
+import { trackKey } from "../utils/trackKey.js";
+
 /**
  * @typedef {{
  *   source: import("../models/Track.js").default,
@@ -16,9 +18,35 @@ const WEIGHTS = {
   instrumentalness: 0.1,
   liveness: 0.1,
   speechiness: 0.1,
+  genre: 0.2,
 };
 
 const TEMPO_RANGE = 140;
+
+/**
+ * Split a genre string like "rock, indie, alternative" into a normalized Set.
+ */
+function genreSet(genres) {
+  if (!genres) return new Set();
+  return new Set(
+    genres
+      .split(",")
+      .map((g) => g.trim().toLowerCase())
+      .filter(Boolean)
+  );
+}
+
+/**
+ * Jaccard similarity between two genre sets.
+ * 0.0 = no overlap, 1.0 = identical sets.
+ */
+function genreOverlap(setA, setB) {
+  if (setA.size === 0 || setB.size === 0) return null; // no data on either side
+  let intersection = 0;
+  for (const g of setA) if (setB.has(g)) intersection++;
+  const union = setA.size + setB.size - intersection;
+  return union === 0 ? 0 : intersection / union;
+}
 
 export function calculateSimilarity(t1, t2) {
   let weightSum = 0;
@@ -51,6 +79,14 @@ export function calculateSimilarity(t1, t2) {
     }
   }
 
+  // Genre comparison
+  const overlap = genreOverlap(genreSet(t1.genres), genreSet(t2.genres));
+  if (overlap !== null) {
+    scoreSum += overlap * WEIGHTS.genre;
+    weightSum += WEIGHTS.genre;
+    if (overlap >= 0.5) reasons.push("shared genres");
+  }
+
   const score = weightSum === 0 ? 0 : scoreSum / weightSum;
   const reason =
     reasons.length > 0
@@ -58,17 +94,6 @@ export function calculateSimilarity(t1, t2) {
       : "based on audio similarity";
   return { score, reason };
 }
-
-/**
- * Build a stable key for a track, matching the logic used elsewhere.
- */
-export function trackKey(track) {
-  if (track.uri) return track.uri;
-  return `${track.name.toLowerCase()}|${track.artists.toLowerCase()}`;
-}
-
-// Backwards-compat alias so callers can use either name
-export const getTrackKey = trackKey;
 
 /**
  * Find pairs of similar tracks within a playlist.

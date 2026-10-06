@@ -4,7 +4,8 @@ import { ok, fail } from "../utils/apiResponse.js";
 import { fetchPlaylistTracks } from "../services/spotifyService.js";
 import { fetchUserLibrary } from "../services/libraryService.js";
 import { enrichTracksWithAudioFeatures } from "../services/reccoBeatsService.js";
-import { findSimilarInPool, trackKey } from "../analyzer/similarTracks.js";
+import { findSimilarInPool } from "../analyzer/similarTracks.js";
+import { trackKey } from "../utils/trackKey.js";
 
 const bodySchema = z.object({
   playlistId: z.string().min(1),

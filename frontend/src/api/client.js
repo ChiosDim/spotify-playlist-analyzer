@@ -8,6 +8,39 @@ export const api = axios.create({
   timeout: 30000,
 });
 
+// A second client for long-running operations (library enrichment can take 2+ minutes)
+const longRunningApi = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+  timeout: 300000, // 5 minutes
+});
+
+// Same interceptor as `api`
+longRunningApi.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    const normalized = {
+      message: "Something went wrong",
+      code: "UNKNOWN",
+      status: err.response?.status ?? 0,
+      details: err.response?.data?.details,
+    };
+    if (err.response?.data) {
+      normalized.message = err.response.data.error || normalized.message;
+      normalized.code = err.response.data.code || normalized.code;
+    } else if (err.code === "ECONNABORTED") {
+      normalized.message = "Request timed out — the library fetch is still running on the server";
+      normalized.code = "TIMEOUT";
+    } else if (!err.response) {
+      normalized.message = "Cannot reach server";
+      normalized.code = "NETWORK_ERROR";
+    }
+    if (normalized.status === 401) {
+      window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+    }
+    return Promise.reject(normalized);
+  }
+);
 /* ------------------------------------------------------------------ */
 /* Response interceptor: normalize errors into a single shape         */
 /* ------------------------------------------------------------------ */
@@ -86,10 +119,12 @@ export const spotifyApi = {
   analyze: (playlistId, include = "features") =>
     apiPost("/spotify/analyze", { playlistId, include }),
   similarFromLibrary: (playlistId, { minScore = 0.7, perSource = 3, limit = 40 } = {}) =>
-    apiPost("/spotify/similar-from-library", {
-      playlistId,
-      minScore,
-      perSource,
-      limit,
-    }),
+    longRunningApi
+      .post("/spotify/similar-from-library", {
+        playlistId,
+        minScore,
+        perSource,
+        limit,
+      })
+      .then((r) => r.data.data),
 };

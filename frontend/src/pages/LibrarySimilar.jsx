@@ -76,6 +76,9 @@ export default function LibrarySimilar() {
               The first search can take up to 60 seconds while we build and enrich your library.
               Later searches will be instant.
             </p>
+            <p className="text-xs text-center text-base-content/40">
+              Tip: keep this tab open. Don&#39;t refresh or navigate away.
+            </p>
           </div>
         )}
 
