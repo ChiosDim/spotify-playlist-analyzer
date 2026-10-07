@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ok, fail } from "../utils/apiResponse.js";
 import { parseCSV } from "../services/parserService.js";
 import { findDuplicates } from "../analyzer/duplicates.js";
+import { decodeFilename } from "../utils/decodeFilename.js";
 
 export const duplicatesController = asyncHandler(async (req, res) => {
   if (!req.file) {
@@ -18,7 +19,7 @@ export const duplicatesController = asyncHandler(async (req, res) => {
   const totalDuplicateTracks = groups.reduce((sum, g) => sum + g.tracks.length, 0);
 
   return ok(res, {
-    filename: req.file.originalname,
+    filename: decodeFilename(req.file.originalname),
     trackCount: tracks.length,
     duplicateGroups: groups,
     totalDuplicateGroups: groups.length,

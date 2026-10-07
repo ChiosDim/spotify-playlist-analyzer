@@ -1,4 +1,3 @@
-import { formatNumber } from "../utils/formatters";
 
 export default function LibraryMatchCard({ match }) {
   return (
@@ -9,9 +8,7 @@ export default function LibraryMatchCard({ match }) {
             <h3 className="font-semibold truncate">{match.track.name}</h3>
             <p className="text-sm text-base-content/60 truncate">{match.track.artists}</p>
           </div>
-          <div className="badge badge-primary badge-lg shrink-0">
-            {formatNumber(match.similarityScore, 2)}
-          </div>
+          <div className="badge badge-primary badge-lg shrink-0">#{match.rank}</div>
         </div>
 
         <p className="text-xs text-base-content/50">

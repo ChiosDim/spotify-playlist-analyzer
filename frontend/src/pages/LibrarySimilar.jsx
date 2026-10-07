@@ -7,8 +7,8 @@ import ErrorAlert from "../components/ErrorAlert";
 
 export default function LibrarySimilar() {
   const mutation = useLibrarySimilar();
-  const [minScore, setMinScore] = useState(0.75);
   const [selected, setSelected] = useState(null);
+  const [limit, setLimit] = useState(30);
 
   const outputRef = useRef(null);
 
@@ -24,7 +24,7 @@ export default function LibrarySimilar() {
   const handlePick = (playlist) => {
     mutation.reset();
     setSelected(playlist);
-    mutation.mutate({ playlistId: playlist.id, minScore, perSource: 3 });
+    mutation.mutate({ playlistId: playlist.id, minScore: 0, perSource: 3, limit });
     scrollToOutput();
   };
 
@@ -42,20 +42,17 @@ export default function LibrarySimilar() {
         <div className="card-body">
           <label className="form-control">
             <span className="label-text mb-2">
-              Minimum similarity: <strong>{minScore.toFixed(2)}</strong>
+              Number of results: <strong>{limit}</strong>
             </span>
             <input
               type="range"
-              min="0.5"
-              max="0.95"
-              step="0.01"
-              value={minScore}
-              onChange={(e) => setMinScore(Number(e.target.value))}
+              min="10"
+              max="100"
+              step="5"
+              value={limit}
+              onChange={(e) => setLimit(Number(e.target.value))}
               className="range range-primary range-sm"
             />
-            <span className="text-xs text-base-content/50 mt-1">
-              Higher values find closer matches but fewer results.
-            </span>
           </label>
         </div>
       </div>

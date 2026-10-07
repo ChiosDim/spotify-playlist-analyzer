@@ -47,37 +47,72 @@ export async function getArtistTopTags(artistName, { limit = 5 } = {}) {
   }
 }
 
-/**
- * Filter out tags that aren't really genres.
- */
+const STOP_TAGS = new Set([
+  // Generic popularity / not genre
+  "all",
+  "my top songs",
+  "my top songs 2023",
+  "my top songs 2024",
+  "my top songs 2025",
+  "rutracker",
+  "seen live",
+  "spotify",
+  "favorites",
+  "favourites",
+  "favorite",
+  "favourite",
+  "love",
+  "loved",
+  "awesome",
+  "cool",
+  "beautiful",
+  "chill",
+  "great",
+  "good",
+  "amazing",
+  "best",
+  "wow",
+  "under 2000 listeners",
+  "under 100 listeners",
+  // Demographic / not genre
+  "male vocalists",
+  "female vocalists",
+  "british",
+  "american",
+  "canadian",
+  "irish",
+  "australian",
+  "swedish",
+  "norwegian",
+  "danish",
+  "german",
+  "french",
+  "icelandic",
+  "swiss",
+  "dutch",
+  // Regional cities
+  "los angeles",
+  "new york",
+  "seattle",
+  "boston",
+  "portland",
+  "nashville",
+  "detroit",
+  "chicago",
+  // Non-genre personal tags
+  "the flourishing zoo",
+  "alt z",
+  "upcoming album 2022",
+  "upcoming album 2024",
+  "punk_add_to_lidarr_batch_11",
+  "funk_add_to_lidarr_batch_11",
+  "need to rate",
+]);
+
 function isStopTag(tag) {
-  const stop = new Set([
-    "favorites",
-    "favourite",
-    "favourites",
-    "favorite",
-    "seen live",
-    "spotify",
-    "love",
-    "loved",
-    "awesome",
-    "cool",
-    "beautiful",
-    "chill",
-    "great",
-    "good",
-    "amazing",
-    "best",
-    "wow",
-    "under 2000 listeners",
-    "male vocalists",
-    "female vocalists",
-    "british",
-    "american",
-    "cover",
-    "covers",
-    "remix",
-    "remixes",
-  ]);
-  return stop.has(tag) || /^\d+$/.test(tag);
+  if (STOP_TAGS.has(tag)) return true;
+  if (/^\d+$/.test(tag)) return true; // "1985", "70s"
+  if (/^\d+s$/.test(tag)) return true; // "60s", "70s", "80s"
+  if (tag.split(" ").length > 3) return true; // "the flourishing zoo of whatever"
+  return false;
 }

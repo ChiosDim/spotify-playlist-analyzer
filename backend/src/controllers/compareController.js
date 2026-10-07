@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ok, fail } from "../utils/apiResponse.js";
 import { parseCSV } from "../services/parserService.js";
 import { comparePlaylists } from "../analyzer/compare.js";
+import { decodeFilename } from "../utils/decodeFilename.js";
 
 export const compareController = asyncHandler(async (req, res) => {
   const files = req.files || [];
@@ -28,12 +29,12 @@ export const compareController = asyncHandler(async (req, res) => {
     );
   }
 
-  const names = files.map((f) => f.originalname.replace(/\.csv$/i, ""));
+  const names = files.map((f) => decodeFilename(f.originalname).replace(/\.csv$/i, ""));
   const comparison = comparePlaylists(playlists, names);
 
   return ok(res, {
     playlists: files.map((f, i) => ({
-      filename: f.originalname,
+      filename: decodeFilename(f.originalname),
       name: names[i],
       trackCount: playlists[i].length,
     })),

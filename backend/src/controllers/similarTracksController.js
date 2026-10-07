@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ok, fail } from "../utils/apiResponse.js";
 import { parseCSV } from "../services/parserService.js";
 import { findSimilarTracks } from "../analyzer/similarTracks.js";
+import { decodeFilename } from "../utils/decodeFilename.js";
 
 const querySchema = z.object({
   minScore: z.coerce.number().min(0).max(1).default(0.5),
@@ -38,7 +39,7 @@ export const similarTracksController = asyncHandler(async (req, res) => {
   const similarTracks = findSimilarTracks(tracks, { minScore, perTrack });
 
   return ok(res, {
-    filename: req.file.originalname,
+    filename: decodeFilename(req.file.originalname),
     trackCount: tracks.length,
     minScore,
     perTrack,

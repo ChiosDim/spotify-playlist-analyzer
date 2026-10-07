@@ -3,6 +3,7 @@ import { ok, fail } from "../utils/apiResponse.js";
 import { parseCSV } from "../services/parserService.js";
 import { genreDistribution, topGenres } from "../analyzer/genre.js";
 import { calculateAudioFeatures } from "../analyzer/stats.js";
+import { decodeFilename } from "../utils/decodeFilename.js";
 
 export const analyzeController = asyncHandler(async (req, res) => {
   if (!req.file) {
@@ -29,7 +30,7 @@ export const analyzeController = asyncHandler(async (req, res) => {
   const audioFeatures = calculateAudioFeatures(tracks);
 
   return ok(res, {
-    filename: req.file.originalname,
+    filename: decodeFilename(req.file.originalname),
     trackCount: tracks.length,
     genreDistribution: distribution,
     topGenres: top,
