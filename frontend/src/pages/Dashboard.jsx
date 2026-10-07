@@ -61,6 +61,15 @@ export default function Dashboard() {
           </div>
         </Link>
         <Link
+          to="/discover"
+          className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors"
+        >
+          <div className="card-body">
+            <h3 className="card-title text-base">Discover</h3>
+            <p className="text-xs text-base-content/60">New music from Last.fm</p>
+          </div>
+        </Link>
+        <Link
           to="/from-my-library"
           className="card bg-base-100 hover:bg-base-200 shadow-sm transition-colors"
         >

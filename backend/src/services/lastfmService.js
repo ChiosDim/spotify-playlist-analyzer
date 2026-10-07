@@ -116,3 +116,60 @@ function isStopTag(tag) {
   if (tag.split(" ").length > 3) return true; // "the flourishing zoo of whatever"
   return false;
 }
+
+
+/**
+ * Fetch tracks similar to a given artist + track via Last.fm's
+ * collaborative-filtering database.
+ * Cached in Redis for 7 days (similar to genre tags).
+ *
+ * @returns {Promise<Array<{ name, artist, match, url, mbid }>>}
+ */
+export async function getSimilarTracks(artist, track, { limit = 10 } = {}) {
+  if (!artist || !track) return [];
+  if (!process.env.LASTFM_API_KEY) {
+    throw new Error("LASTFM_API_KEY is not configured");
+  }
+
+  const redis = getRedis();
+  const cacheKey = `lastfm:similar:${artist.toLowerCase()}|${track.toLowerCase()}`;
+  const cached = await redis.get(cacheKey);
+  if (cached) return JSON.parse(cached);
+
+  try {
+    const { data } = await axios.get(LASTFM_API, {
+      params: {
+        method: "track.getsimilar",
+        artist,
+        track,
+        api_key: process.env.LASTFM_API_KEY,
+        format: "json",
+        limit,
+        autocorrect: 1,
+      },
+      timeout: 8000,
+    });
+
+    if (data?.error) {
+      // Track not found in Last.fm — cache empty result briefly
+      await redis.setex(cacheKey, 3600, JSON.stringify([]));
+      return [];
+    }
+
+    const list = data?.similartracks?.track ?? [];
+    const result = list.map((t) => ({
+      name: t.name,
+      artist: t.artist?.name ?? "Unknown",
+      match: Number(t.match) || 0,
+      url: t.url ?? "",
+      mbid: t.mbid ?? "",
+    }));
+
+    await redis.setex(cacheKey, 60 * 60 * 24 * 7, JSON.stringify(result));
+    return result;
+  } catch (err) {
+    console.warn(`[lastfm] getSimilarTracks failed for "${track}":`, err.message);
+    await redis.setex(cacheKey, 3600, JSON.stringify([]));
+    return [];
+  }
+}

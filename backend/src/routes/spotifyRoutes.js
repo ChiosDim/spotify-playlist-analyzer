@@ -9,6 +9,7 @@ import { genreDistribution, topGenres } from "../analyzer/genre.js";
 import { calculateAudioFeatures } from "../analyzer/stats.js";
 import { findDuplicates } from "../analyzer/duplicates.js";
 import { findSimilarTracks } from "../analyzer/similarTracks.js";
+import { spotifySimilarTracksController } from "../controllers/spotifySimilarTracksController.js";
 
 const router = Router();
 
@@ -89,8 +90,12 @@ router.post(
  * Body: { playlistId, minScore?, perSource?, limit? }
  * Finds tracks in the user's other playlists that are similar to the given playlist.
  */
-router.post(
-  "/similar-from-library",
-  asyncHandler(librarySimilarController)
-);
+router.post("/similar-from-library", asyncHandler(librarySimilarController));
+
+/**
+ * POST /api/spotify/similar-tracks
+ * Body: { playlistId, minScore?, perTrack? }
+ * Finds pairs of similar tracks within the chosen Spotify playlist.
+ */
+router.post("/similar-tracks", asyncHandler(spotifySimilarTracksController));
 export default router;

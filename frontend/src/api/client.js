@@ -111,6 +111,14 @@ export const analyzeApi = {
     form.append("playlist", file);
     return apiPost(`/similar-tracks?minScore=${minScore}&perTrack=${perTrack}`, form);
   },
+  discoverCSV: (file, { seedCount = 10, perSeed = 10, limit = 40 } = {}) => {
+    const form = new FormData();
+    form.append("playlist", file);
+    return apiPost(
+      `/discover?source=csv&seedCount=${seedCount}&perSeed=${perSeed}&limit=${limit}`,
+      form
+    );
+  },
 };
 
 /* Spotify */
@@ -124,6 +132,18 @@ export const spotifyApi = {
         playlistId,
         minScore,
         perSource,
+        limit,
+      })
+      .then((r) => r.data.data),
+  similarTracks: (playlistId, { minScore = 0.55, perTrack = 2 } = {}) =>
+    apiPost("/spotify/similar-tracks", { playlistId, minScore, perTrack }),
+  discoverSpotify: ({ playlistId, seedCount = 10, perSeed = 10, limit = 40 }) =>
+    longRunningApi
+      .post("/discover", {
+        source: "spotify",
+        playlistId,
+        seedCount,
+        perSeed,
         limit,
       })
       .then((r) => r.data.data),

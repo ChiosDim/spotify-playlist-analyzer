@@ -12,8 +12,8 @@ import { trackKey } from "../utils/trackKey.js";
 // ─────────────────────────────────────────────────────────────────
 // TUNING KNOBS — change these two numbers to shift the balance
 // ─────────────────────────────────────────────────────────────────
-const AUDIO_WEIGHT = 0.30; // how much audio features matter (0–1)
-const GENRE_WEIGHT = 0.70; // how much genre overlap matters (0–1)
+const AUDIO_WEIGHT = 0.3; // how much audio features matter (0–1)
+const GENRE_WEIGHT = 0.7; // how much genre overlap matters (0–1)
 // They should sum to 1.0
 
 // Per-feature weights inside the audio score (must sum to 1.0)

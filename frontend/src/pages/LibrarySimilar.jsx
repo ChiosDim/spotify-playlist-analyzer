@@ -8,7 +8,7 @@ import ErrorAlert from "../components/ErrorAlert";
 export default function LibrarySimilar() {
   const mutation = useLibrarySimilar();
   const [selected, setSelected] = useState(null);
-  const [limit, setLimit] = useState(30);
+  const [limit, setLimit] = useState(40);
 
   const outputRef = useRef(null);
 
@@ -24,7 +24,7 @@ export default function LibrarySimilar() {
   const handlePick = (playlist) => {
     mutation.reset();
     setSelected(playlist);
-    mutation.mutate({ playlistId: playlist.id, minScore: 0, perSource: 3, limit });
+    mutation.mutate({ playlistId: playlist.id, perSource: 3, limit });
     scrollToOutput();
   };
 

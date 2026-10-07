@@ -32,6 +32,9 @@ export default function Navbar() {
             <NavLink to="/similar-tracks" className={linkClass}>
               Similar Tracks
             </NavLink>
+            <NavLink to="/discover" className={linkClass}>
+              Discover
+            </NavLink>
             <NavLink to="/from-my-library" className={linkClass}>
               From My Library
             </NavLink>
