@@ -27,6 +27,7 @@ export function buildSessionMiddleware() {
     saveUninitialized: false,
     name: "spa.sid", // don't advertise "connect.sid"
     rolling: true, // reset TTL on every request
+    proxy: isProd,
     cookie: {
       httpOnly: true,
       secure: isProd, // HTTPS only in prod
