@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000/api";
-
+const API_URL =
+  import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://127.0.0.1:5000/api" : "/api");
+  
 export const api = axios.create({
   baseURL: API_URL,
   withCredentials: true, // Send/receive the spa.sid cookie on every request
