@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: spotify-analyzer-api
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # We'll add this in the Render dashboard
+      - key: REDIS_URL
+        sync: false # We'll add this in the Render dashboard
+      - key: SESSION_SECRET
+        generateValue: true # Render will create a secure random value for us
+      - key: SPOTIFY_CLIENT_ID
+        sync: false
+      - key: SPOTIFY_CLIENT_SECRET
+        sync: false
+      - key: SPOTIFY_REDIRECT_URI
+        sync: false
+      - key: LASTFM_API_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
