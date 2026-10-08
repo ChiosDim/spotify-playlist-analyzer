@@ -13,6 +13,11 @@ const CONCURRENCY_PLAYLISTS = 5;
 const CONCURRENCY_LASTFM = 15;
 const MAX_PLAYLISTS = 30;
 
+const LOG_TIMING = process.env.NODE_ENV !== "production";
+const logTiming = (msg) => {
+  if (LOG_TIMING) console.log(msg);
+};
+
 async function runWithConcurrency(items, limit, fn) {
   const results = [];
   const executing = new Set();
@@ -68,16 +73,16 @@ export async function fetchUserLibrary(user, opts = {}) {
   const cacheKey = `library:${CACHE_VERSION}:${user.spotifyId}`;
 
   const overallStart = Date.now();
-  console.log(`[timing] === library fetch START (user=${user.spotifyId}) ===`);
+  logTiming(`[timing] === library fetch START (user=${user.spotifyId}) ===`);
 
   if (!opts.force) {
     const t0 = Date.now();
     const cached = await redis.get(cacheKey);
-    console.log(`[timing] cache lookup: ${Date.now() - t0}ms`);
+    logTiming(`[timing] cache lookup: ${Date.now() - t0}ms`);
 
     if (cached) {
       const parsed = JSON.parse(cached);
-      console.log(`[timing] === CACHE HIT — returning ${parsed.tracks.length} tracks ===`);
+      logTiming(`[timing] === CACHE HIT — returning ${parsed.tracks.length} tracks ===`);
       return {
         tracks: parsed.tracks.map((t) => new Track(t)),
         playlistsByKey: parsed.playlistsByKey,
@@ -86,13 +91,13 @@ export async function fetchUserLibrary(user, opts = {}) {
         cached: true,
       };
     }
-    console.log(`[timing] cache MISS — will fetch from scratch`);
+    logTiming(`[timing] cache MISS — will fetch from scratch`);
   }
 
   // Stage 1: Auth
   const tAuth = Date.now();
   const accessToken = await ensureFreshAccessToken(user);
-  console.log(`[timing] stage 1 (auth): ${Date.now() - tAuth}ms`);
+  logTiming(`[timing] stage 1 (auth): ${Date.now() - tAuth}ms`);
 
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -121,7 +126,7 @@ export async function fetchUserLibrary(user, opts = {}) {
     offset += limit;
     if (offset >= data.total || data.items?.length === 0) break;
   }
-  console.log(
+  logTiming(
     `[timing] stage 2 (list playlists): ${Date.now() - tListPlaylists}ms — ` +
       `${ownedPlaylists.length} owned, ${skipped} skipped`
   );
@@ -135,7 +140,7 @@ export async function fetchUserLibrary(user, opts = {}) {
     try {
       const tracks = await fetchOnePlaylistTracks(accessToken, playlist.id);
       for (const track of tracks) {
-        const key = trackKey(track); 
+        const key = trackKey(track);
         if (!tracksByKey.has(key)) tracksByKey.set(key, track);
         if (!playlistsByKey[key]) playlistsByKey[key] = [];
         if (!playlistsByKey[key].includes(playlist.name)) {
@@ -143,11 +148,11 @@ export async function fetchUserLibrary(user, opts = {}) {
         }
       }
     } catch (err) {
-      console.warn(`[library] failed to fetch "${playlist.name}":`, err.message);
+      logTiming(`[library] failed to fetch "${playlist.name}":`, err.message);
       skipped++;
     }
   });
-  console.log(
+  logTiming(
     `[timing] stage 3 (fetch tracks): ${Date.now() - tFetchTracks}ms — ` +
       `${tracksByKey.size} unique tracks`
   );
@@ -156,18 +161,16 @@ export async function fetchUserLibrary(user, opts = {}) {
 
   // Stage 4: ReccoBeats enrichment
   const tEnrich = Date.now();
-  console.log(`[library] enriching ${tracksArray.length} tracks with audio features…`);
+  logTiming(`[library] enriching ${tracksArray.length} tracks with audio features…`);
   const enrichment = await enrichTracksWithAudioFeatures(tracksArray);
-  console.log(
+  logTiming(
     `[timing] stage 4 (ReccoBeats enrichment): ${Date.now() - tEnrich}ms — ` +
       `${enrichment.enriched}/${tracksArray.length} enriched`
   );
 
   // Stage 4b: Filter to enriched-only
   const enrichedTracks = tracksArray.filter((t) => t.danceability > 0);
-  console.log(
-    `[library] filtered to ${enrichedTracks.length}/${tracksArray.length} enriched tracks`
-  );
+  logTiming(`[library] filtered to ${enrichedTracks.length}/${tracksArray.length} enriched tracks`);
 
   // Stage 5: Last.fm genre enrichment
   const tGenres = Date.now();
@@ -179,7 +182,7 @@ export async function fetchUserLibrary(user, opts = {}) {
     }
   }
 
-  console.log(`[library] fetching genres for ${artistNames.size} unique artists…`);
+  logTiming(`[library] fetching genres for ${artistNames.size} unique artists…`);
   const genreMap = new Map();
   const artistList = [...artistNames];
 
@@ -194,7 +197,7 @@ export async function fetchUserLibrary(user, opts = {}) {
     t.genres = tags ? tags.join(", ") : "";
   }
 
-  console.log(
+  logTiming(
     `[timing] stage 5 (Last.fm genres): ${Date.now() - tGenres}ms — ` +
       `${genreMap.size}/${artistNames.size} artists with tags`
   );
@@ -220,12 +223,12 @@ export async function fetchUserLibrary(user, opts = {}) {
         skippedCount: result.skippedCount,
       })
     );
-    console.log(`[timing] stage 6 (cache write): ${Date.now() - tCache}ms`);
+    logTiming(`[timing] stage 6 (cache write): ${Date.now() - tCache}ms`);
   } catch (err) {
-    console.warn("[library] cache write failed:", err.message);
+    logTiming(`[library] cache write failed:`, err.message);
   }
 
-  console.log(`[timing] === library fetch COMPLETE — total: ${Date.now() - overallStart}ms ===`);
+  logTiming(`[timing] === library fetch COMPLETE — total: ${Date.now() - overallStart}ms ===`);
 
   return result;
 }
