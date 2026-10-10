@@ -7,12 +7,14 @@ A full-stack web app for analyzing Spotify playlists — genre distribution, aud
 ![Backend health](https://img.shields.io/website?url=https%3A%2F%2Fspotify-playlist-analyzer-cuxb.onrender.com%2Fapi%2Fhealth&label=backend)
 
 ---
-**Home Page**
+**Home Page:**
+
 ![Home page](docs/screenshot-home.png)
 
 ---
 
-**Discover Feature**
+**Discover Feature:**
+
 ![Discover](docs/screenshot-discover.png)
 
 ## Features
