@@ -8,6 +8,9 @@ A full-stack web app for analyzing Spotify playlists — genre distribution, aud
 
 ---
 
+![Home page](docs/screenshot-home.png)
+![Discover](docs/screenshot-discover.png)
+
 ## Features
 
 - **Analyze** — upload an Exportify CSV or pick a Spotify playlist to see genre distribution and audio feature statistics
