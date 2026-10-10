@@ -130,6 +130,3 @@ Both services deploy automatically on push to `main`.
 
 ---
 
-## License
-
-MIT
