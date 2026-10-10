@@ -1,5 +1,9 @@
+packages:
+  - '.'
+
 allowBuilds:
-  msw: set this to true or false
+  msw: true
+
 minimumReleaseAgeExclude:
   - "@sentry/browser-utils@10.75.2"
   - "@sentry/browser@10.75.2"

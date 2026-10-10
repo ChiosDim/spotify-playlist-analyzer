@@ -1,8 +1,12 @@
+packages:
+  - '.'
+
 allowBuilds:
+  mongodb-memory-server: true
   "@parcel/watcher": false
   "@sentry/node-cpu-profiler": false
-  mongodb-memory-server: true
   unrs-resolver: false
+
 minimumReleaseAgeExclude:
   - "@sentry/core@10.75.2"
   - "@sentry/node-core@10.75.2"
