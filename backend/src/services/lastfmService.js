@@ -117,7 +117,6 @@ function isStopTag(tag) {
   return false;
 }
 
-
 /**
  * Fetch tracks similar to a given artist + track via Last.fm's
  * collaborative-filtering database.

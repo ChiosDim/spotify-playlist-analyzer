@@ -1,4 +1,3 @@
-
 export default function LibraryMatchCard({ match }) {
   return (
     <div className="card bg-base-100 shadow-sm border border-base-300">
